@@ -114,20 +114,44 @@
 	\textbf{-append} defines the command line for the kernel \\
 
 \section{Concurrency Write Up}
+	1. The purpose of this assignment was to allow us to become familiar with the
+qemu-based yocto environment and working with the VM. Furthermore, it allowed us
+ to refresh our skills from Operating Systems 1, in terms of programming.
+  Lastly, it taught us how to think about threads working concurrently and
+	 how to optimize their performances without sacrificing functionality.
 
-	lmao
+2. I decided to just educate myself about how the producer-consumer problem
+worked theoretically so I looked at references and other tutorials. Next, I wrote
+out my implementation on paper and decided to use a mutex lock to prevent to threads
+ from accessing a buffer, a signal to indicate when the lock was removed, as well as
+  a wait for whenever we needed to wait a random period of time.
+
+3. To ensure my solution was correct, I tested boundary cases such as when the
+ buffer was full, empty, or simply normally filled. I ran the program multiple times to ensure the random numbers were consistently in range, and also to make sure that we maintained exclusive buffer access.
+
+4. I learned about how complex it can be when two threads are working on the same
+data, concurrently. A lot of stuff goes on that you do not expect to happen so the
+ control flow is quite inconsistent. Further, I learned the importance of thinking
+ in parallel because without two threads, the best we could do is have a producer
+  make 1 object, a consumer consumes, and the cycle continues. With our method it
+	allows the threads to continuously work and produce results in a shorter time.
+
 
 \section{Version Control Log}
 
 \begin{tabular}{ c | c }
 	\hline
-	e9411b8 &	 Added Makefile, mersenne, some small changes \\
+	462092b10d2c5876be67ebd0073c2841cb94a031 &  fixing makefile \\
+	\hline
+	6cd536c5e0cd880cf265ccd0fa77b783cab218a0 &   Finalizing concurrency, adding latex \\
+	\hline
+	e9411b8a587380de32cd1fd318b9f3700964ecc5 &	Added Makefile, mersenne, some small changes \\
   \hline
-  ce34cbb &  removing temp file \\
+  ce34cbb44cadc33ff07d5089b6b6102e416f4f1e &  removing temp file \\
 	\hline
-  f12ca65 & initial commit for concurrency code \\
+  f12ca65be464186e8661fbd79ecc4da149c93881 & initial commit for concurrency code \\
 	\hline
-  b108951 &  Adding code\_repo \\
+  b1089512127b723a3247c7aba611d8a6e57d9ad7 &  Adding code\_repo \\
   \hline
 \end{tabular}
 
@@ -137,5 +161,6 @@
 	10/6 - Built the kernel, ran the VM \\
 	10/7 - Started working on concurrency code \\
 	10/8 - Implemented mersenne, continued working on other parts of concurrency\\
+	10/9 - Finished concurrency, wrote latex and answered questions\\
 
 \end{document}
