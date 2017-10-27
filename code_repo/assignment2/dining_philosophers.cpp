@@ -50,6 +50,8 @@ int get_forks(int forks[5]) {
 }
 
 void eat(philospher philo) {
+  int thinkingTime = rand() % 8 + 2;
+
   return;
 }
 
