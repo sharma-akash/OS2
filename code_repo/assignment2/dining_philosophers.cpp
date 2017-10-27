@@ -7,7 +7,18 @@ void get_forks();
 void eat();
 void put_forks();
 
+struct philospher {
+    bool hasFork = false;
+};
+
 int main() {
+
+  philospher Aristotle;
+  philospher ImmanuelKant;
+  philospher ReneDescrates;
+  philospher KarlMarx;
+  philospher JohnLocke;
+
   while (true) {
     think();
     get_forks();
