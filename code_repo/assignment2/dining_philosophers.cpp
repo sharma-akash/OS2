@@ -6,9 +6,9 @@ using namespace std;
 
 struct philospher {
     string name;
-    bool hasFork = false;
-    bool isEating = false;
-    bool isThinking = false;
+    int hasFork = 0;
+    int isEating = 0;
+    int isThinking = 0;
 };
 
 void think(philospher);
@@ -57,4 +57,19 @@ void eat(philospher philo) {
 
 void put_forks() {
   return;
+}
+
+void print_status(philospher philo, int [])
+{
+  int x;
+  for(x = 0; x++; x < 5)
+  {
+    switch (philo[x].isThinking)
+    case 0:
+      cout << "Philosopher" << x << "," << philo[x].name << "has" << philo[x].hasFork << "forks, and is currently eating\n";
+    case 1:
+      cout << "Philosopher" << x << "," << philo[x].name << "has" << philo[x].hasFork << "forks, and is currently thinking\n";
+    default:
+      cout << "Philosopher" << x << "," << philo[x].name << "has" << philo[x].hasFork << "forks, and is currently waiting\n";
+  } 
 }
