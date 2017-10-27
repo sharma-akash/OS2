@@ -2,40 +2,46 @@
 
 using namespace std;
 
-void think();
-void get_forks();
-void eat();
-void put_forks();
-
 struct philospher {
     bool hasFork = false;
-};
+} Aristotle, ImmanuelKant, ReneDescrates, KarlMarx, JohnLocke;
+
+void think(philospher);
+int get_forks(int*);
+void eat(philospher);
+void put_forks();
 
 int main() {
 
-  philospher Aristotle;
-  philospher ImmanuelKant;
-  philospher ReneDescrates;
-  philospher KarlMarx;
-  philospher JohnLocke;
+  philospher philosphers[5];
+
+  philosphers[0] = Aristotle;
+  philosphers[1] = ImmanuelKant;
+  philosphers[2] = ReneDescrates;
+  philosphers[3] = KarlMarx;
+  philosphers[4] = JohnLocke;
+
+  int forks[5] = {1, 1, 1, 1, 1};
 
   while (true) {
-    think();
-    get_forks();
-    eat();
-    put_forks();
-    }
+    for(int i = 0; i < 5; i++) {
+      think(philosphers[i]);
+      get_forks(forks);
+      eat(philosphers[i]);
+      put_forks();
+      }
+  }
 }
 
-void think() {
+void think(philospher philo) {
   return;
 }
 
-void get_forks() {
-  return;
+int get_forks(int forks[5]) {
+  return 0;
 }
 
-void eat() {
+void eat(philospher philo) {
   return;
 }
 
