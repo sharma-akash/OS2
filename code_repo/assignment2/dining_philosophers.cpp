@@ -72,4 +72,16 @@ void print_status(philospher philo, int [])
     default:
       cout << "Philosopher" << x << "," << philo[x].name << "has" << philo[x].hasFork << "forks, and is currently waiting\n";
   } 
+
+  for (x = 0; x++, x < 5)
+  {
+    if (philo[x].hasFork == 1)
+    {
+      cout << "Fork number" << x << "is in the hands of" << philo[x].name << "\n";
+    }
+    else
+    {
+      cout << "Fork number" << x << "is currently available\n";
+    }
+  }
 }
