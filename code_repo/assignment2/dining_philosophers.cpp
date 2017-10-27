@@ -1,10 +1,15 @@
 #include <iostream>
+#include <stdlib.h>
+#include <time.h>
 
 using namespace std;
 
 struct philospher {
+    string name;
     bool hasFork = false;
-} Aristotle, ImmanuelKant, ReneDescrates, KarlMarx, JohnLocke;
+    bool isEating = false;
+    bool isThinking = false;
+};
 
 void think(philospher);
 int get_forks(int*);
@@ -14,12 +19,13 @@ void put_forks();
 int main() {
 
   philospher philosphers[5];
+  srand (time(NULL));
 
-  philosphers[0] = Aristotle;
-  philosphers[1] = ImmanuelKant;
-  philosphers[2] = ReneDescrates;
-  philosphers[3] = KarlMarx;
-  philosphers[4] = JohnLocke;
+  philosphers[0].name = "Aristotle";
+  philosphers[1].name = "ImmanuelKant";
+  philosphers[2].name = "ReneDescrates";
+  philosphers[3].name = "KarlMarx";
+  philosphers[4].name = "JohnLocke";
 
   int forks[5] = {1, 1, 1, 1, 1};
 
@@ -34,6 +40,8 @@ int main() {
 }
 
 void think(philospher philo) {
+  int thinkingTime = rand() % 20 + 1;
+
   return;
 }
 
