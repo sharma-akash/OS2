@@ -65,12 +65,14 @@ void print_status(philospher philo, int [])
   for(x = 0; x++; x < 5)
   {
     switch (philo[x].isThinking)
+    {
     case 0:
-      cout << "Philosopher" << x << "," << philo[x].name << "has" << philo[x].hasFork << "forks, and is currently eating\n";
+      cout << "Philosopher" << x << "," << philo[x].name << ", is currently eating\n";
     case 1:
-      cout << "Philosopher" << x << "," << philo[x].name << "has" << philo[x].hasFork << "forks, and is currently thinking\n";
+      cout << "Philosopher" << x << "," << philo[x].name << ", is currently thinking\n";
     default:
-      cout << "Philosopher" << x << "," << philo[x].name << "has" << philo[x].hasFork << "forks, and is currently waiting\n";
+      cout << "Philosopher" << x << "," << philo[x].name << ", is currently waiting\n";
+    }
   } 
 
   for (x = 0; x++, x < 5)
