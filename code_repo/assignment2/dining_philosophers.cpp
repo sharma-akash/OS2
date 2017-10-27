@@ -1,6 +1,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <time.h>
+#include <thread>
 
 using namespace std;
 
@@ -15,10 +16,13 @@ void think(philospher);
 int get_forks(int*);
 void eat(philospher);
 void put_forks();
+void startPhilospher(int*,  philospher*);
+
 
 int main() {
 
   philospher philosphers[5];
+  int forks[5] = {1, 1, 1, 1, 1};
   srand (time(NULL));
 
   philosphers[0].name = "Aristotle";
@@ -27,16 +31,29 @@ int main() {
   philosphers[3].name = "KarlMarx";
   philosphers[4].name = "JohnLocke";
 
-  int forks[5] = {1, 1, 1, 1, 1};
-
-  while (true) {
     for(int i = 0; i < 5; i++) {
-      think(philosphers[i]);
-      get_forks(forks);
-      eat(philosphers[i]);
-      put_forks();
-      }
+      thread t (test, forks, philosphers);
+    }
+
+}
+
+
+
+void startPhilospher(int forks[5], philospher philosphers[5]) {
+
+  for(int i = 0; i < 5; i++) {
+    cout << philosphers[i].name << "\n";
   }
+}
+
+/*
+  while (true) {
+    think(philosphers[i]);
+    get_forks(forks);
+    eat(philosphers[i]);
+    put_forks();
+  }
+  */
 }
 
 void think(philospher philo) {
@@ -50,7 +67,7 @@ int get_forks(int forks[5]) {
 }
 
 void eat(philospher philo) {
-  int thinkingTime = rand() % 8 + 2;
+  int eatingTime = rand() % 8 + 2;
 
   return;
 }
