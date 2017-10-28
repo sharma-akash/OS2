@@ -92,10 +92,13 @@ void print_status(philospher philo[5], int forks[5])
     {
     case 0:
       cout << philo[x].name << " is currently waiting.\n";
+      break;
     case 1:
       cout << philo[x].name << " is currently eating.\n";
+      break;
     case 2:
       cout << philo[x].name << " is currently thinking.\n";
+      break;
     default:
       cout << philo[x].name << " broke my code!\n";
     }
