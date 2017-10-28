@@ -21,7 +21,7 @@ void start_philospher(philospher *, int *);
 void print_status(philospher *, int *);
 
 mutex mtx;
-int lastForkTaken = 0;
+int lastForkTaken = -1;
 
 int main() {
 
@@ -30,10 +30,10 @@ int main() {
   srand (time(NULL));
 
   philosphers[0].name = "Aristotle";
-  philosphers[1].name = "ImmanuelKant";
-  philosphers[2].name = "ReneDescrates";
-  philosphers[3].name = "KarlMarx";
-  philosphers[4].name = "JohnLocke";
+  philosphers[1].name = "Immanuel Kant";
+  philosphers[2].name = "Rene Descrates";
+  philosphers[3].name = "Karl Marx";
+  philosphers[4].name = "John Locke";
 
   thread p1 (start_philospher, &philosphers[0], forks);
   this_thread::sleep_for(chrono::seconds(1));
@@ -45,6 +45,7 @@ int main() {
   this_thread::sleep_for(chrono::seconds(1));
   thread p5 (start_philospher, &philosphers[4], forks);
 
+  print_status(philosphers, forks);
 
   auto startTime = chrono::steady_clock::now();
   auto endTime = chrono::steady_clock::now();
@@ -88,14 +89,18 @@ void think(philospher * philo) {
 void get_forks(philospher * philo, int forks[5]) {
 
   while(true) {
-    philo->status = 0;
     mtx.lock();
     int forkOne = -1, forkTwo = -1;
 
     for(int i = 0; i < 5; i++) {
 
+      if(lastForkTaken == i) {
+        continue;
+      }
+
       if(lastForkTaken == 3 && forks[4] == 1) {
         forkOne = 4;
+        lastForkTaken = 4;
       }
 
       if(forks[i]) {
@@ -138,7 +143,7 @@ void put_forks(philospher * philo, int forks[5]) {
   philo->forks[0] = -1;
   philo->forks[1] = -1;
   mtx.unlock();
-
+  philo->status = 0;
   cout << "\n" << philo->name << " put back his forks..\n";
 
 }
