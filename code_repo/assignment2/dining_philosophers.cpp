@@ -59,7 +59,7 @@ void put_forks() {
   return;
 }
 
-void print_status(philospher philo)
+void print_status(philospher philo[])
 {
   int x;
   for(x = 0; x++; x < 5)
@@ -76,7 +76,7 @@ void print_status(philospher philo)
   } 
 
   int y;
-  for (y = 0; y++, y < 5)
+  for (y = 0; y++; y < 5)
   {
     if (philo[y].hasFork == 1)
     {
