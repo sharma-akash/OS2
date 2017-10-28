@@ -39,6 +39,7 @@ int main() {
   */
 
   thread t (print_status, philosphers, forks);
+  t.join();
 
 }
 
