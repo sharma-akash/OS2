@@ -3,23 +3,25 @@
 #include <time.h>
 #include <thread>
 #include <chrono>
+#include <mutex>
 
 using namespace std;
 
 struct philospher {
     string name;
-    int hasFork = 0;
-    int isEating = 0;
-    int isThinking = 0;
+    int status = 0;
+    int forks[2] = {-1, -1};
 };
 
-void think(philospher);
-int get_forks(int*);
-void eat(philospher);
-void put_forks();
+void think(philospher *);
+void get_forks(philospher*, int*);
+void eat(philospher *);
+void put_forks(philospher*, int*);
 void start_philospher(philospher *, int *);
 void print_status(philospher *, int *);
 
+mutex mtx;
+int lastForkTaken = 0;
 
 int main() {
 
@@ -33,68 +35,132 @@ int main() {
   philosphers[3].name = "KarlMarx";
   philosphers[4].name = "JohnLocke";
 
+  thread p1 (start_philospher, &philosphers[0], forks);
+  this_thread::sleep_for(chrono::seconds(1));
+  thread p2 (start_philospher, &philosphers[1], forks);
+  this_thread::sleep_for(chrono::seconds(1));
+  thread p3 (start_philospher, &philosphers[2], forks);
+  this_thread::sleep_for(chrono::seconds(1));
+  thread p4 (start_philospher, &philosphers[3], forks);
+  this_thread::sleep_for(chrono::seconds(1));
+  thread p5 (start_philospher, &philosphers[4], forks);
+
+
+  auto startTime = chrono::steady_clock::now();
+  auto endTime = chrono::steady_clock::now();
 
   while(true) {
-    thread t (print_status, philosphers, forks);
-    t.join();
+    if(chrono::duration_cast<chrono::seconds>(endTime - startTime).count() > 3) {
+      print_status(philosphers, forks);
+      startTime = chrono::steady_clock::now();
+    }
+    endTime = chrono::steady_clock::now();
   }
 
+  p1.join();
+  p2.join();
+  p3.join();
+  p4.join();
+  p5.join();
 }
 
 
 
-void start_philospher(philospher philosphers[5], int forks[5]) {
+void start_philospher(philospher * philo, int forks[5]) {
 
-  for(int i = 0; i < 5; i++) {
-    cout << philosphers[i].name << "\n";
-  }
-
-/*
   while (true) {
-    think(philosphers[i]);
-    get_forks(forks);
-    eat(philosphers[i]);
-    put_forks();
+    think(philo);
+    get_forks(philo, forks);
+    eat(philo);
+    put_forks(philo, forks);
   }
-  */
+
 }
 
-void think(philospher philo) {
+void think(philospher * philo) {
   int thinkingTime = rand() % 20 + 1;
+  cout << "\n" << philo->name << " is thinking for " << thinkingTime << " seconds\n";
+  philo->status = 2;
   this_thread::sleep_for(chrono::seconds(thinkingTime));
   return;
 }
 
-int get_forks(int forks[5]) {
-  return 0;
+void get_forks(philospher * philo, int forks[5]) {
+
+  while(true) {
+    philo->status = 0;
+    mtx.lock();
+    int forkOne = -1, forkTwo = -1;
+
+    for(int i = 0; i < 5; i++) {
+
+      if(lastForkTaken == 3 && forks[4] == 1) {
+        forkOne = 4;
+      }
+
+      if(forks[i]) {
+        if(forkOne == -1) {
+          forkOne = i;
+        } else {
+          forkTwo = i;
+          break;
+        }
+      }
+    }
+
+    if(forkTwo != -1) {
+      philo->forks[0] = forkOne;
+      philo->forks[1] = forkTwo;
+      lastForkTaken = forkTwo;
+      forks[forkOne] = 0;
+      forks[forkTwo] = 0;
+      mtx.unlock();
+      return;
+    }
+
+    mtx.unlock();
+  }
 }
 
-void eat(philospher philo) {
-
+void eat(philospher * philo) {
   int eatingTime = rand() % 8 + 2;
-
+  cout << "\n" << philo->name << " is eating for " << eatingTime << " seconds.\n";
+  philo->status = 1;
+  this_thread::sleep_for(chrono::seconds(eatingTime));
   return;
 }
 
-void put_forks() {
-  return;
+void put_forks(philospher * philo, int forks[5]) {
+
+  mtx.lock();
+  forks[philo->forks[0]] = 1;
+  forks[philo->forks[1]] = 1;
+  philo->forks[0] = -1;
+  philo->forks[1] = -1;
+  mtx.unlock();
+
+  cout << "\n" << philo->name << " put back his forks..\n";
+
 }
 
 void print_status(philospher philo[5], int forks[5])
 {
   int x;
+
+  cout << "\n------------------\n\n";
+
   for(x = 0; x < 5; x++)
   {
-    switch (philo[x].isThinking)
+    switch (philo[x].status)
     {
     case 0:
       cout << philo[x].name << " is currently waiting.\n";
       break;
     case 1:
-      cout << philo[x].name << " is currently eating.\n";
+      cout << philo[x].name << " is currently eating. YUM!\n";
       break;
     case 2:
-      cout << philo[x].name << " is currently thinking.\n";
+      cout << philo[x].name << " is currently thinking. Hmmm...\n";
       break;
     default:
       cout << philo[x].name << " broke my code!\n";
@@ -105,9 +171,9 @@ void print_status(philospher philo[5], int forks[5])
 
   for (x = 0; x < 5; x++)
   {
-    if (philo[x].hasFork)
+    if (!forks[x])
     {
-      cout << "Fork number" << x << "is in the hands of" << philo[x].name << "\n";
+      cout << "Fork " << x << " is not available" << "\n";
     }
     else
     {
