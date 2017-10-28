@@ -38,8 +38,10 @@ int main() {
   }
   */
 
-  thread t (print_status, philosphers, forks);
-
+  while(true) {
+    thread t (print_status, philosphers, forks);
+    t.join();
+  }
 }
 
 
