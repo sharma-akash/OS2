@@ -99,13 +99,13 @@ void print_status(philospher philo[5], int forks[5])
 
   for (x = 0; x < 5; x++)
   {
-    if (philo[x].hasFork == 1)
+    if (philo[y].hasFork == 1)
     {
-      cout << "Fork number" << x << "is in the hands of" << philo[x].name << "\n";
+      cout << "Fork number" << y << "is in the hands of" << philo[y].name << "\n";
     }
     else
     {
-      cout << "Fork number" << x << "is currently available\n";
+      cout << "Fork number" << y << "is currently available\n";
     }
   }
 }
