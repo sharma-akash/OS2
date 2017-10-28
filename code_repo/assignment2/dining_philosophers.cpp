@@ -16,7 +16,8 @@ void think(philospher);
 int get_forks(int*);
 void eat(philospher);
 void put_forks();
-void startPhilospher(int*,  philospher*);
+void start_philospher(philospher *, int *);
+void print_status(philospher *, int *);
 
 
 int main() {
@@ -31,20 +32,23 @@ int main() {
   philosphers[3].name = "KarlMarx";
   philosphers[4].name = "JohnLocke";
 
-    for(int i = 0; i < 5; i++) {
-      thread t (test, forks, philosphers);
-    }
+/*
+  for(int i = 0; i < 5; i++) {
+    thread t (startPhilospher, forks, philosphers);
+  }
+  */
+
+  thread t (print_status, philosphers, forks);
 
 }
 
 
 
-void startPhilospher(int forks[5], philospher philosphers[5]) {
+void start_philospher(philospher philosphers[5], int forks[5]) {
 
   for(int i = 0; i < 5; i++) {
     cout << philosphers[i].name << "\n";
   }
-}
 
 /*
   while (true) {
@@ -77,10 +81,10 @@ void put_forks() {
   return;
 }
 
-void print_status(philospher philo, int [])
+void print_status(philospher philo[5], int forks[5])
 {
   int x;
-  for(x = 0; x++; x < 5)
+  for(x = 0; x < 5; x++)
   {
     switch (philo[x].isThinking)
     {
@@ -93,7 +97,7 @@ void print_status(philospher philo, int [])
     }
   }
 
-  for (x = 0; x++, x < 5)
+  for (x = 0; x < 5; x++)
   {
     if (philo[x].hasFork == 1)
     {
