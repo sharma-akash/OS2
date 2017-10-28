@@ -104,6 +104,8 @@ void print_status(philospher philo[5], int forks[5])
     }
   }
 
+  cout << "\n";
+  
   for (x = 0; x < 5; x++)
   {
     if (philo[x].hasFork)
@@ -112,7 +114,9 @@ void print_status(philospher philo[5], int forks[5])
     }
     else
     {
-      cout << "Fork number" << x << "is currently available\n";
+      cout << "Fork " << x << " is currently available\n";
     }
   }
+
+  cout << "\n------------------\n\n";
 }
