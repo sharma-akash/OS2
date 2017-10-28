@@ -59,7 +59,7 @@ void put_forks() {
   return;
 }
 
-void print_status(philospher philo, int [])
+void print_status(philospher philo)
 {
   int x;
   for(x = 0; x++; x < 5)
@@ -75,15 +75,16 @@ void print_status(philospher philo, int [])
     }
   } 
 
-  for (x = 0; x++, x < 5)
+  int y;
+  for (y = 0; y++, y < 5)
   {
-    if (philo[x].hasFork == 1)
+    if (philo[y].hasFork == 1)
     {
-      cout << "Fork number" << x << "is in the hands of" << philo[x].name << "\n";
+      cout << "Fork number" << y << "is in the hands of" << philo[y].name << "\n";
     }
     else
     {
-      cout << "Fork number" << x << "is currently available\n";
+      cout << "Fork number" << y << "is currently available\n";
     }
   }
 }
