@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <thread>
+#include <chrono>
 
 using namespace std;
 
@@ -32,16 +33,12 @@ int main() {
   philosphers[3].name = "KarlMarx";
   philosphers[4].name = "JohnLocke";
 
-/*
-  for(int i = 0; i < 5; i++) {
-    thread t (startPhilospher, forks, philosphers);
-  }
-  */
 
   while(true) {
     thread t (print_status, philosphers, forks);
     t.join();
   }
+
 }
 
 
@@ -64,7 +61,7 @@ void start_philospher(philospher philosphers[5], int forks[5]) {
 
 void think(philospher philo) {
   int thinkingTime = rand() % 20 + 1;
-
+  this_thread::sleep_for(chrono::seconds(thinkingTime));
   return;
 }
 
@@ -105,7 +102,7 @@ void print_status(philospher philo[5], int forks[5])
   }
 
   cout << "\n";
-  
+
   for (x = 0; x < 5; x++)
   {
     if (philo[x].hasFork)
