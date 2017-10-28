@@ -89,23 +89,25 @@ void print_status(philospher philo[5], int forks[5])
     switch (philo[x].isThinking)
     {
     case 0:
-      cout << "Philosopher" << x << "," << philo[x].name << ", is currently eating\n";
+      cout << philo[x].name << " is currently waiting.\n";
     case 1:
-      cout << "Philosopher" << x << "," << philo[x].name << ", is currently thinking\n";
+      cout << philo[x].name << " is currently eating.\n";
+    case 2:
+      cout << philo[x].name << " is currently thinking.\n";
     default:
-      cout << "Philosopher" << x << "," << philo[x].name << ", is currently waiting\n";
+      cout << philo[x].name << " broke my code!\n";
     }
   }
 
   for (x = 0; x < 5; x++)
   {
-    if (philo[y].hasFork == 1)
+    if (philo[x].hasFork)
     {
-      cout << "Fork number" << y << "is in the hands of" << philo[y].name << "\n";
+      cout << "Fork number" << x << "is in the hands of" << philo[x].name << "\n";
     }
     else
     {
-      cout << "Fork number" << y << "is currently available\n";
+      cout << "Fork number" << x << "is currently available\n";
     }
   }
 }
