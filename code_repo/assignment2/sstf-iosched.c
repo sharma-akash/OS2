@@ -20,11 +20,11 @@ static void sstf_merged_requests(struct request_queue *q, struct request *rq,
 
 static int sstf_dispatch(struct request_queue *q, int force)
 {
-	struct sstf_data *nd = q->elevator->elevator_data;
+	struct sstf_data *sstfd = q->elevator->elevator_data;
 
-	if (!list_empty(&nd->queue)) {
+	if (!list_empty(&sstfd->queue)) {
 		struct request *rq;
-		rq = list_entry(nd->queue.next, struct request, queuelist);
+		rq = list_entry(sstfd->queue.next, struct request, queuelist);
 		list_del_init(&rq->queuelist);
 		elv_dispatch_sort(q, rq);
 		return 1;
@@ -34,9 +34,43 @@ static int sstf_dispatch(struct request_queue *q, int force)
 
 static void sstf_add_request(struct request_queue *q, struct request *rq)
 {
-	struct sstf_data *nd = q->elevator->elevator_data;
+	struct sstf_data *sstfd = q->elevator->elevator_data;
+  struct request *cur_req;
+  struct list_head *cur_pos;
+  int inserted = 0;
 
-	list_add_tail(&rq->queuelist, &nd->queue);
+
+  if (list_empty(&sstfd->queue)) { //when we have nothing in the queue list
+    list_add_tail(&rq->queuelist, &sstfd->queue);
+    return;
+  }
+
+  sector_t head_pos = q->end_sector;
+  //iterate through the queue and store the request in current request
+  list_for_each (cur_pos, &sstfd->queue) {
+   and head to current
+    cur_req = list_entry(cur_pos, struct request, queueList);
+
+    long dis_head_cur_req = abs(blk_rq_pos(rq) - head_pos);   //distance head to request
+    long dis_head_cur_pos = abs(blk_rq_pos(cur_req) - head_pos); //distance head to cur pos
+
+    // if distance from head to the request is less than distance between head
+    // and the current request in the queue we loop through
+
+    if (dis_head_cur_req < dis_head_cur_pos) {
+      list_add_tail(&rq->queuelist, cur_pos);
+      inserted = 1;
+      break;
+    }
+
+    //set head position to current position from this iteration
+    head_pos = blk_rq_pos(cur_req);
+  }
+
+  //if we didn't insert, just add to the end
+  if (!inserted) {
+    list_add_tail(&rq->queuelist, cur_pos);
+  }
 }
 
 static struct request *
