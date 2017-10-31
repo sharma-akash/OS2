@@ -154,4 +154,4 @@ module_exit(sstf_exit);
 
 MODULE_AUTHOR("Jens Axboe");
 MODULE_LICENSE("GPL");
-MODULE_DESCRIPTION("No-op IO scheduler");
+MODULE_DESCRIPTION("SSTF IO scheduler");
