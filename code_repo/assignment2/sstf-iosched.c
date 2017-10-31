@@ -46,10 +46,9 @@ static void sstf_add_request(struct request_queue *q, struct request *rq)
   }
 
   sector_t head_pos = q->end_sector;
-  //iterate through the queue and store the request in current request
+  //iterate through the queue
   list_for_each (cur_pos, &sstfd->queue) {
-   and head to current
-    cur_req = list_entry(cur_pos, struct request, queueList);
+    cur_req = list_entry(cur_pos, struct request, queuelist);
 
     long dis_head_cur_req = abs(blk_rq_pos(rq) - head_pos);   //distance head to request
     long dis_head_cur_pos = abs(blk_rq_pos(cur_req) - head_pos); //distance head to cur pos
