@@ -1,0 +1,358 @@
+--- Kconfigold	2017-11-15 23:17:52.000000000 -0800
++++ Kconfig	2017-11-15 22:30:30.000000000 -0800
+@@ -15,6 +15,11 @@
+
+ if BLK_DEV
+
++config BLK_DEV_SBD
++	tristate "updated sbd driver"
++	default m
++	depends on BLK_DEV_CRYPTOLOOP
++
+ config BLK_DEV_NULL_BLK
+ 	tristate "Null test block driver"
+
+ --- Makefileold	2017-11-15 23:22:09.000000000 -0800
+ +++ Makefile	2017-11-15 22:02:18.000000000 -0800
+ @@ -1,49 +1,52 @@
+ -#
+ -# Makefile for the kernel block device drivers.
+ -#
+ -# 12 June 2000, Christoph Hellwig <hch@infradead.org>
+ -# Rewritten to use lists instead of if-statements.
+ -#
+ -
+ -obj-$(CONFIG_MAC_FLOPPY)	+= swim3.o
+ -obj-$(CONFIG_BLK_DEV_SWIM)	+= swim_mod.o
+ -obj-$(CONFIG_BLK_DEV_FD)	+= floppy.o
+ -obj-$(CONFIG_AMIGA_FLOPPY)	+= amiflop.o
+ -obj-$(CONFIG_PS3_DISK)		+= ps3disk.o
+ -obj-$(CONFIG_PS3_VRAM)		+= ps3vram.o
+ -obj-$(CONFIG_ATARI_FLOPPY)	+= ataflop.o
+ -obj-$(CONFIG_AMIGA_Z2RAM)	+= z2ram.o
+ -obj-$(CONFIG_BLK_DEV_RAM)	+= brd.o
+ -obj-$(CONFIG_BLK_DEV_LOOP)	+= loop.o
+ -obj-$(CONFIG_BLK_CPQ_DA)	+= cpqarray.o
+ -obj-$(CONFIG_BLK_CPQ_CISS_DA)  += cciss.o
+ -obj-$(CONFIG_BLK_DEV_DAC960)	+= DAC960.o
+ -obj-$(CONFIG_XILINX_SYSACE)	+= xsysace.o
+ -obj-$(CONFIG_CDROM_PKTCDVD)	+= pktcdvd.o
+ -obj-$(CONFIG_MG_DISK)		+= mg_disk.o
+ -obj-$(CONFIG_SUNVDC)		+= sunvdc.o
+ -obj-$(CONFIG_BLK_DEV_NVME)	+= nvme.o
+ -obj-$(CONFIG_BLK_DEV_SKD)	+= skd.o
+ -obj-$(CONFIG_BLK_DEV_OSD)	+= osdblk.o
+ -
+ -obj-$(CONFIG_BLK_DEV_UMEM)	+= umem.o
+ -obj-$(CONFIG_BLK_DEV_NBD)	+= nbd.o
+ -obj-$(CONFIG_BLK_DEV_CRYPTOLOOP) += cryptoloop.o
+ -obj-$(CONFIG_VIRTIO_BLK)	+= virtio_blk.o
+ -
+ -obj-$(CONFIG_BLK_DEV_SX8)	+= sx8.o
+ -obj-$(CONFIG_BLK_DEV_HD)	+= hd.o
+ -
+ -obj-$(CONFIG_XEN_BLKDEV_FRONTEND)	+= xen-blkfront.o
+ -obj-$(CONFIG_XEN_BLKDEV_BACKEND)	+= xen-blkback/
+ -obj-$(CONFIG_BLK_DEV_DRBD)     += drbd/
+ -obj-$(CONFIG_BLK_DEV_RBD)     += rbd.o
+ -obj-$(CONFIG_BLK_DEV_PCIESSD_MTIP32XX)	+= mtip32xx/
+ -
+ -obj-$(CONFIG_BLK_DEV_RSXX) += rsxx/
+ -obj-$(CONFIG_BLK_DEV_NULL_BLK)	+= null_blk.o
+ -obj-$(CONFIG_ZRAM) += zram/
+ -
+ -nvme-y		:= nvme-core.o nvme-scsi.o
+ -skd-y		:= skd_main.o
+ -swim_mod-y	:= swim.o swim_asm.o
+ +#
+ +# Makefile for the kernel block device drivers.
+ +#
+ +# 12 June 2000, Christoph Hellwig <hch@infradead.org>
+ +# Rewritten to use lists instead of if-statements.
+ +#
+ +
+ +obj-$(CONFIG_MAC_FLOPPY)	+= swim3.o
+ +obj-$(CONFIG_BLK_DEV_SWIM)	+= swim_mod.o
+ +obj-$(CONFIG_BLK_DEV_FD)	+= floppy.o
+ +obj-$(CONFIG_AMIGA_FLOPPY)	+= amiflop.o
+ +obj-$(CONFIG_PS3_DISK)		+= ps3disk.o
+ +obj-$(CONFIG_PS3_VRAM)		+= ps3vram.o
+ +obj-$(CONFIG_ATARI_FLOPPY)	+= ataflop.o
+ +obj-$(CONFIG_AMIGA_Z2RAM)	+= z2ram.o
+ +obj-$(CONFIG_BLK_DEV_RAM)	+= brd.o
+ +obj-$(CONFIG_BLK_DEV_LOOP)	+= loop.o
+ +obj-$(CONFIG_BLK_CPQ_DA)	+= cpqarray.o
+ +obj-$(CONFIG_BLK_CPQ_CISS_DA)  += cciss.o
+ +obj-$(CONFIG_BLK_DEV_DAC960)	+= DAC960.o
+ +obj-$(CONFIG_XILINX_SYSACE)	+= xsysace.o
+ +obj-$(CONFIG_CDROM_PKTCDVD)	+= pktcdvd.o
+ +obj-$(CONFIG_MG_DISK)		+= mg_disk.o
+ +obj-$(CONFIG_SUNVDC)		+= sunvdc.o
+ +obj-$(CONFIG_BLK_DEV_NVME)	+= nvme.o
+ +obj-$(CONFIG_BLK_DEV_SKD)	+= skd.o
+ +obj-$(CONFIG_BLK_DEV_OSD)	+= osdblk.o
+ +
+ +obj-$(CONFIG_BLK_DEV_UMEM)	+= umem.o
+ +obj-$(CONFIG_BLK_DEV_NBD)	+= nbd.o
+ +obj-$(CONFIG_BLK_DEV_CRYPTOLOOP) += cryptoloop.o
+ +obj-$(CONFIG_VIRTIO_BLK)	+= virtio_blk.o
+ +
+ +obj-$(CONFIG_BLK_DEV_SX8)	+= sx8.o
+ +obj-$(CONFIG_BLK_DEV_HD)	+= hd.o
+ +
+ +obj-$(CONFIG_XEN_BLKDEV_FRONTEND)	+= xen-blkfront.o
+ +obj-$(CONFIG_XEN_BLKDEV_BACKEND)	+= xen-blkback/
+ +obj-$(CONFIG_BLK_DEV_DRBD)     += drbd/
+ +obj-$(CONFIG_BLK_DEV_RBD)     += rbd.o
+ +obj-$(CONFIG_BLK_DEV_PCIESSD_MTIP32XX)	+= mtip32xx/
+ +#obj-$(CONFIG_BLK_DEV_SBULL)     += sbull/
+ +obj-$(CONFIG_BLK_DEV_SBD)				+= sbd_updated.o
+ +
+ +
+ +obj-$(CONFIG_BLK_DEV_RSXX) += rsxx/
+ +obj-$(CONFIG_BLK_DEV_NULL_BLK)	+= null_blk.o
+ +obj-$(CONFIG_ZRAM) += zram/
+ +
+ +nvme-y		:= nvme-core.o nvme-scsi.o
+ +skd-y		:= skd_main.o
+ +swim_mod-y	:= swim.o swim_asm.o
+
+ --- new	1969-12-31 16:00:00.000000000 -0800
+ +++ sbd_updated.c	2017-11-15 23:50:18.000000000 -0800
+ @@ -0,0 +1,236 @@
+ +/* pulled from: http://blog.superpat.com/2010/05/04/a-simple-block-driver-for-linux-kernel-2-6-31/ */
+ +
+ +/*
+ + * A sample, extra-simple block driver. Updated for kernel 2.6.31.
+ + *
+ + * (C) 2003 Eklektix, Inc.
+ + * (C) 2010 Pat Patterson <pat at superpat dot com>
+ + * Redistributable under the terms of the GNU GPL.
+ + */
+ +
+ +#include <linux/module.h>
+ +#include <linux/moduleparam.h>
+ +#include <linux/init.h>
+ +
+ +#include <linux/kernel.h> /* printk() */
+ +#include <linux/fs.h>     /* everything... */
+ +#include <linux/errno.h>  /* error codes */
+ +#include <linux/types.h>  /* size_t */
+ +#include <linux/vmalloc.h>
+ +#include <linux/genhd.h>
+ +#include <linux/blkdev.h>
+ +#include <linux/hdreg.h>
+ +#include <linux/crypto.h>
+ +#include <linux/scatterlist.h>
+ +
+ +MODULE_LICENSE("Dual BSD/GPL");
+ +static char *Version = "1.4";
+ +
+ +
+ +/*
+ + * We can tweak our hardware sector size, but the kernel talks to us
+ + * in terms of small sectors, always.
+ + */
+ +#define KERNEL_SECTOR_SIZE 512
+ +
+ +/*
+ + * Our request queue.
+ + */
+ +static struct request_queue *Queue;
+ +
+ +/*
+ +* Struct for crypto
+ +*/
+ +
+ +static struct crypto_cipher *crypto_module;
+ +
+ +/*
+ +* Module params
+ +*/
+ +
+ +static int major_num = -1;
+ +module_param(major_num, int, 0);
+ +
+ +static int logical_block_size = 512;
+ +module_param(logical_block_size, int, 0);
+ +
+ +static int nsectors = 1024;
+ +module_param(nsectors, int, 0);
+ +
+ +static char * enc_key;
+ +module_param(enc_key, charp, 0);
+ +
+ +
+ +/*
+ + * The internal representation of our device.
+ + */
+ +static struct sbd_device {
+ +	unsigned long size;
+ +	spinlock_t lock;
+ +	u8 *data;
+ +	struct gendisk *gd;
+ +} Device;
+ +
+ +/*
+ + * Handle an I/O request.
+ + */
+ +static void sbd_transfer(struct sbd_device *dev, sector_t sector,
+ +	unsigned long nsect, char *buffer, int write) {
+ +	unsigned long offset = sector * logical_block_size;
+ +	unsigned long nbytes = nsect * logical_block_size;
+ +  int i;
+ +
+ +	if ((offset + nbytes) > dev->size) {
+ +		printk (KERN_NOTICE "sbd: Beyond-end write (%ld %ld)\n", offset, nbytes);
+ +		return;
+ +	}
+ +	if (write) {
+ +    printk("Starting write\n");
+ +    for(i = 0; i < nbytes; i += crypto_cipher_blocksize(crypto_module)) {
+ +      crypto_cipher_encrypt_one(crypto_module,dev->data+offset+i, buffer+i);
+ +    }
+ +    printk("unencrypted text: \n");
+ +		u8 *str = dev->data + offset;
+ +    for (i = 0 ; i < nbytes ; i++){
+ +      	printk("%02x ", str[i]);
+ +		}
+ +
+ +    printk("unencrypted text: \n");
+ +
+ +    for (i = 0 ; i < nbytes ; i++){
+ +      	printk("%02x ", buffer[i]);
+ +		}
+ +
+ +   } else {
+ +    printk("Starting read\n");
+ +		memcpy(buffer, dev->data + offset, nbytes);
+ +    for(i = 0; i < nbytes; i += crypto_cipher_blocksize(crypto_module)) {
+ +			crypto_cipher_decrypt_one(crypto_module,buffer+i,dev->data + offset +i);
+ +    }
+ +    printk("unencrypted: \n");
+ +
+ +		for (i = 0 ; i < nbytes ; i++){
+ +      	printk("%02x ", buffer[i]);
+ +		}
+ +    printk("encrypted: \n");
+ +		u8 *str = dev->data + offset;
+ +		for (i = 0 ; i < nbytes ; i++){
+ +      	printk("%02x ", str[i]);
+ +		}
+ +  }
+ +}
+ +
+ +static void sbd_request(struct request_queue *q) {
+ +	struct request *req;
+ +
+ +	req = blk_fetch_request(q);
+ +	while (req != NULL) {
+ +		// blk_fs_request() was removed in 2.6.36 - many thanks to
+ +		// Christian Paro for the heads up and fix...
+ +		//if (!blk_fs_request(req)) {
+ +		if (req == NULL || (req->cmd_type != REQ_TYPE_FS)) {
+ +			printk (KERN_NOTICE "Skip non-CMD request\n");
+ +			__blk_end_request_all(req, -EIO);
+ +			continue;
+ +		}
+ +		sbd_transfer(&Device, blk_rq_pos(req), blk_rq_cur_sectors(req),
+ +				bio_data(req->bio), rq_data_dir(req));
+ +		if ( ! __blk_end_request_cur(req, 0) ) {
+ +			req = blk_fetch_request(q);
+ +		}
+ +	}
+ +}
+ +
+ +/*
+ + * The HDIO_GETGEO ioctl is handled in blkdev_ioctl(), which
+ + * calls this. We need to implement getgeo, since we can't
+ + * use tools such as fdisk to partition the drive otherwise.
+ + */
+ +int sbd_getgeo(struct block_device * block_device, struct hd_geometry * geo) {
+ +	long size;
+ +
+ +	/* We have no real geometry, of course, so make something up. */
+ +	size = Device.size * (logical_block_size / KERNEL_SECTOR_SIZE);
+ +	geo->cylinders = (size & ~0x3f) >> 6;
+ +	geo->heads = 4;
+ +	geo->sectors = 16;
+ +	geo->start = 0;
+ +	return 0;
+ +}
+ +
+ +/*
+ + * The device operations structure.
+ + */
+ +static struct block_device_operations sbd_ops = {
+ +		.owner  = THIS_MODULE,
+ +		.getgeo = sbd_getgeo
+ +};
+ +
+ +static int __init sbd_init(void) {
+ +	/*
+ +	 * Set up our internal device.
+ +	 */
+ +	Device.size = nsectors * logical_block_size;
+ +	spin_lock_init(&Device.lock);
+ +	Device.data = vmalloc(Device.size);
+ +
+ +  /* init crypto struct */
+ +
+ +  crypto_module = crypto_alloc_cipher("aes", 0 , 0);
+ +  crypto_cipher_setkey(crypto_module, enc_key, strlen(enc_key));
+ +
+ +
+ +	if (Device.data == NULL)
+ +		return -ENOMEM;
+ +	/*
+ +	 * Get a request queue.
+ +	 */
+ +	Queue = blk_init_queue(sbd_request, &Device.lock);
+ +	if (Queue == NULL)
+ +		goto out;
+ +	blk_queue_logical_block_size(Queue, logical_block_size);
+ +	/*
+ +	 * Get registered.
+ +	 */
+ +	major_num = register_blkdev(major_num, "sbd");
+ +	if (major_num < 0) {
+ +		printk(KERN_WARNING "sbd: unable to get major number\n");
+ +		goto out;
+ +	}
+ +	/*
+ +	 * And the gendisk structure.
+ +	 */
+ +	Device.gd = alloc_disk(16);
+ +	if (!Device.gd)
+ +		goto out_unregister;
+ +	Device.gd->major = major_num;
+ +	Device.gd->first_minor = 0;
+ +	Device.gd->fops = &sbd_ops;
+ +	Device.gd->private_data = &Device;
+ +	strcpy(Device.gd->disk_name, "sbd0");
+ +	set_capacity(Device.gd, nsectors);
+ +	Device.gd->queue = Queue;
+ +	add_disk(Device.gd);
+ +
+ +	return 0;
+ +
+ +out_unregister:
+ +	unregister_blkdev(major_num, "sbd");
+ +out:
+ +	vfree(Device.data);
+ +	return -ENOMEM;
+ +}
+ +
+ +static void __exit sbd_exit(void)
+ +{
+ +	del_gendisk(Device.gd);
+ +	put_disk(Device.gd);
+ +	unregister_blkdev(major_num, "sbd");
+ +	blk_cleanup_queue(Queue);
+ +	vfree(Device.data);
+ +
+ +  crypto_free_cipher(crypto_module);
+ +}
+ +
+ +module_init(sbd_init);
+ +module_exit(sbd_exit);

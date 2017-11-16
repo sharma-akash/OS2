@@ -20,16 +20,12 @@
 #include <linux/genhd.h>
 #include <linux/blkdev.h>
 #include <linux/hdreg.h>
+#include <linux/crypto.h>
+#include <linux/scatterlist.h>
 
 MODULE_LICENSE("Dual BSD/GPL");
 static char *Version = "1.4";
 
-static int major_num = 0;
-module_param(major_num, int, 0);
-static int logical_block_size = 512;
-module_param(logical_block_size, int, 0);
-static int nsectors = 1024; /* How big the drive is */
-module_param(nsectors, int, 0);
 
 /*
  * We can tweak our hardware sector size, but the kernel talks to us
@@ -41,6 +37,29 @@ module_param(nsectors, int, 0);
  * Our request queue.
  */
 static struct request_queue *Queue;
+
+/*
+* Struct for crypto
+*/
+
+static struct crypto_cipher *crypto_module;
+
+/*
+* Module params
+*/
+
+static int major_num = -1;
+module_param(major_num, int, 0);
+
+static int logical_block_size = 512;
+module_param(logical_block_size, int, 0);
+
+static int nsectors = 1024;
+module_param(nsectors, int, 0);
+
+static char * enc_key;
+module_param(enc_key, charp, 0);
+
 
 /*
  * The internal representation of our device.
@@ -56,18 +75,49 @@ static struct sbd_device {
  * Handle an I/O request.
  */
 static void sbd_transfer(struct sbd_device *dev, sector_t sector,
-		unsigned long nsect, char *buffer, int write) {
+	unsigned long nsect, char *buffer, int write) {
 	unsigned long offset = sector * logical_block_size;
 	unsigned long nbytes = nsect * logical_block_size;
+  int i;
 
 	if ((offset + nbytes) > dev->size) {
 		printk (KERN_NOTICE "sbd: Beyond-end write (%ld %ld)\n", offset, nbytes);
 		return;
 	}
-	if (write)
-		memcpy(dev->data + offset, buffer, nbytes);
-	else
+	if (write) {
+    printk("Starting write\n");
+    for(i = 0; i < nbytes; i += crypto_cipher_blocksize(crypto_module)) {
+      crypto_cipher_encrypt_one(crypto_module,dev->data+offset+i, buffer+i);
+    }
+    printk("unencrypted text: \n");
+		u8 *str = dev->data + offset;
+    for (i = 0 ; i < nbytes ; i++){
+      	printk("%02x ", str[i]);
+		}
+
+    printk("unencrypted text: \n");
+
+    for (i = 0 ; i < nbytes ; i++){
+      	printk("%02x ", buffer[i]);
+		}
+
+   } else {
+    printk("Starting read\n");
 		memcpy(buffer, dev->data + offset, nbytes);
+    for(i = 0; i < nbytes; i += crypto_cipher_blocksize(crypto_module)) {
+			crypto_cipher_decrypt_one(crypto_module,buffer+i,dev->data + offset +i);
+    }
+    printk("unencrypted: \n");
+
+		for (i = 0 ; i < nbytes ; i++){
+      	printk("%02x ", buffer[i]);
+		}
+    printk("encrypted: \n");
+		u8 *str = dev->data + offset;
+		for (i = 0 ; i < nbytes ; i++){
+      	printk("%02x ", str[i]);
+		}
+  }
 }
 
 static void sbd_request(struct request_queue *q) {
@@ -123,6 +173,13 @@ static int __init sbd_init(void) {
 	Device.size = nsectors * logical_block_size;
 	spin_lock_init(&Device.lock);
 	Device.data = vmalloc(Device.size);
+
+  /* init crypto struct */
+
+  crypto_module = crypto_alloc_cipher("aes", 0 , 0);
+  crypto_cipher_setkey(crypto_module, enc_key, strlen(enc_key));
+
+
 	if (Device.data == NULL)
 		return -ENOMEM;
 	/*
@@ -171,6 +228,8 @@ static void __exit sbd_exit(void)
 	unregister_blkdev(major_num, "sbd");
 	blk_cleanup_queue(Queue);
 	vfree(Device.data);
+
+  crypto_free_cipher(crypto_module);
 }
 
 module_init(sbd_init);
