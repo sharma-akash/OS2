@@ -5,7 +5,7 @@
 
 using namespace std;
 
-void start();
+void start(int);
 
 mutex mtx_num;
 mutex mtx_res;
@@ -14,10 +14,10 @@ int numProcesses = 0;
 bool wait = false;
 
 int main() {
-  thread process1 (start);
-  thread process2 (start);
-  thread process3 (start);
-  thread process4 (start);
+  thread process1 (start, 1);
+  thread process2 (start, 2);
+  thread process3 (start, 3);
+  thread process4 (start, 4);
 
   process1.join();
   process2.join();
@@ -25,7 +25,7 @@ int main() {
   process4.join();
 }
 
-void start() {
+void start(int num) {
   while(1) {
     while(1) {
       mtx_num.lock();
@@ -49,9 +49,13 @@ void start() {
     }
 
     mtx_res.lock();
+    printf("Process %d accessing shared resource\n", num);
     sharedResource++;
+    printf("Shared resource: %d (increments by 1 each access)\n", sharedResource);
     mtx_res.unlock();
+
     this_thread::sleep_for(chrono::seconds(3));
+
     mtx_num.lock();
     numProcesses--;
     printf("Number using resource: %d\n", numProcesses);
