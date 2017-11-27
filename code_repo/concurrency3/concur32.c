@@ -27,7 +27,7 @@ void ins()
             append_node(input); // put node onto end of list
 
             pthread_mutex_unlock(&inserter); // allow other inserters
-            sleep(2); // sleep for 2 rather than 1 to avoid list getting too big
+            sleep(4); // sleep for 4 rather than 3 to avoid list getting too big
         }
     }
 
@@ -60,7 +60,7 @@ void ser()
             }
             pthread_mutex_unlock(&searcher);
         }
-        sleep(1); // need these commands or else the list gets big too quickly
+        sleep(3); // need these commands or else the list gets big too quickly
     }
 }
 
@@ -104,7 +104,7 @@ void del()
             }
         pthread_mutex_unlock(&inserter);
         }
-    sleep(1);    
+    sleep(2);    
     }
 }
 
