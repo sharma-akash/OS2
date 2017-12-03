@@ -1,0 +1,9 @@
+Design Plan:
+
+For these algorithms, both the efficiency computation and the best-fit allocation, the design plan is as follows. 
+It will be necessary to first investigate the first-fit algorithm in the slob.c file and use that as a base template 
+to develop our best-fit algorithm. The first-fit algorithm simply scans memory and the first free part it finds that 
+can fit the given data, it will allocate to. The best-fit seeks further and tries to find the closest match, so the 
+implementation will need editing in this regard. The changes made will be easily recorded within a patch file and 
+we will be able to consider how the two differ. Further, we will utilize the syscall() function to test our program 
+and contrast the free and used space in memory. 
